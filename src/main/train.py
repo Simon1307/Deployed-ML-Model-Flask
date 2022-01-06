@@ -127,7 +127,7 @@ def main():
                                 ts_acc)
         print("-" * 50)
 
-    # determine the best model
+    # determine best model
     val_accuracies = []
     for i in range(len(all_metrics)):
         # Evaluate model based on validation accuracy in last epoch
