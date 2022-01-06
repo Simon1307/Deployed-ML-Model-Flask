@@ -3,21 +3,21 @@ import tensorflow as tf
 import numpy as np
 import os
 import json
-import sys
+import logging
 import warnings
 warnings.filterwarnings('ignore')
-currentdir = os.path.dirname(os.path.realpath(__file__))
-parentdir = os.path.dirname(currentdir)
-sys.path.append(parentdir)
-from model import Network
-from optimizer import Optimizer
-from utils.data_utils import prepare_data
-from utils.visualization_utils import plot_experiment_results
+from src.main.model import Network
+from src.main.optimizer import Optimizer
+from src.utils.data_utils import prepare_data
+from src.utils.visualization_utils import plot_experiment_results
 
 
 # tf.autograph.set_verbosity(0)
 # import logging
 # logging.getLogger("tensorflow").setLevel(logging.ERROR)
+
+
+logger = logging.getLogger(__name__)
 
 
 def run_experiment(i, hyperparameter, x_train, y_train, x_val, y_val):
@@ -59,18 +59,16 @@ def run_experiment(i, hyperparameter, x_train, y_train, x_val, y_val):
 
     # print(model.summary())
     if hyperparameter["save_model"][i]:
-        if not os.path.exists('../resources/models'):
-            os.mkdir("../resources/models")
-        filepath = "../resources/models/" + hyperparameter["name"][i]
+        if not os.path.exists('./src/resources/models'):
+            os.mkdir("./src/resources/models")
+        filepath = "./src/resources/models/" + hyperparameter["name"][i]
         tf.keras.models.save_model(model, filepath=filepath)
-        print(f"Model weights save to: {hyperparameter['name'][i]}")
 
-    print("Validation accuracy:", ts_acc[-1])
     return tr_loss, tr_acc, ts_loss, ts_acc
 
 
 def main():
-    train = pd.read_csv("../resources/train.csv")
+    train = pd.read_csv("./src/resources/train.csv")
 
     x_train, y_train = prepare_data("train", train)
 
@@ -84,19 +82,16 @@ def main():
     y_val = tf.reshape(y_val, shape=(len(y_val), 1, 1))
     y_train = tf.reshape(y_train, shape=(len(y_train), 1, 1))
 
-    print("Training data loaded with shapes:")
-    print(f"x_train: {x_train.shape}")
-    print(f"y_train: {y_train.shape}")
-    print(f"x_train: {x_val.shape}")
-    print(f"y_train: {y_val.shape}")
+    logger.info('Train data loaded')
 
-    config_path = '../conf/config.json'  # '../conf/test_config.json'
+
+    config_path = './src/conf/config.json'  # '../conf/test_config.json'
     with open(config_path) as f:
         experiments = json.load(f)
 
     all_metrics = []
     for i in range(len(experiments["name"])):
-        print(f"Experiment {i + 1} running...")
+        logger.info(f"Experiment {i + 1} running...")
         tr_loss, tr_acc, ts_loss, ts_acc = run_experiment(i,
                                                           experiments,
                                                           x_train,
@@ -105,11 +100,9 @@ def main():
                                                           y_val)
 
         all_metrics.append([tr_loss, tr_acc, ts_loss, ts_acc])
-        print("\n")
-    print("-" * 20)
 
-    if not os.path.exists('../resources/results'):
-        os.mkdir('../resources/results')
+    if not os.path.exists('./src/resources/results'):
+        os.mkdir('./src/resources/results')
 
     for i in range(len(experiments["name"])):
         epochs = experiments["epochs"][i]
@@ -125,7 +118,6 @@ def main():
                                 tr_acc,
                                 ts_loss,
                                 ts_acc)
-        print("-" * 50)
 
     # determine best model
     val_accuracies = []
@@ -134,9 +126,9 @@ def main():
         val_accuracies.append(all_metrics[i][-1][-1])
     best_exp_idx = np.argmax(val_accuracies)
     experiment_name = experiments["name"][best_exp_idx]
-    print("Best performing model:", experiment_name)
+    logger.info(f"Best performing model: {experiment_name}")
 
-    with open('../resources/models/best_model.txt', 'w') as f:
+    with open('./src/resources/models/best_model.txt', 'w') as f:
         json.dump(experiment_name, f)
 
 

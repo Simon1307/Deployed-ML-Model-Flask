@@ -30,3 +30,9 @@ def prepare_data(dataset, data):
     else:
         passenger_ids = data["PassengerId"]
         return x, passenger_ids
+
+
+def parse_observation(obs: list) -> np.array:
+    """Reshape a list into a 1 x len(obs) numpy array"""
+    new_obs = np.array(obs).reshape(1, -1)
+    return new_obs

@@ -21,5 +21,5 @@ def plot_experiment_results(epochs, experiment_name, tr_loss, tr_acc, ts_loss, t
     ax2.set_ylabel("Accuracy")
     ax2.legend()
     
-    filepath = '../resources/results' + experiment_name
+    filepath = './src/resources/results' + experiment_name
     fig.savefig(filepath)
