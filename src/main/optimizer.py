@@ -1,5 +1,9 @@
 import tensorflow as tf
 import time
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class Optimizer:
@@ -61,12 +65,6 @@ class Optimizer:
             start = time.time()
             self.train()
             self.test()
-
-            if verbose > 0:
-                print("epoch: " + str(i + 1) + " TRAIN LOSS: " + str(self.train_loss.result()) + \
-                      " TEST LOSS: " + str(self.test_loss.result()) + " TRAIN ACC: " + \
-                      str(self.train_accuracy.result()) + " TEST ACC: " + str(self.test_accuracy.result()) + \
-                      "Time: " + str(round(time.time() - start, 2)))
 
             historyTR_loss.append(float(self.train_loss.result()))
             historyTS_loss.append(float(self.test_loss.result()))
