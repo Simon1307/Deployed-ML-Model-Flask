@@ -1,4 +1,7 @@
 ## Deployment of a trained Neural Network using Flask to predict Titanic survival
+
+This repository serves as an example how you can deploy a trained ML model using Flask and containerize the microservice using Docker.
+
 First, train 3 models:
 
     $ python3 run.py train
