@@ -10,7 +10,7 @@ from src.main.model import Network
 from src.main.optimizer import Optimizer
 from src.utils.data_utils import prepare_data
 from src.utils.visualization_utils import plot_experiment_results
-
+from src.utils.config import get_config
 
 # tf.autograph.set_verbosity(0)
 # import logging
@@ -84,11 +84,7 @@ def main():
 
     logger.info('Train data loaded')
 
-
-    config_path = './src/conf/config.json'  # '../conf/test_config.json'
-    with open(config_path) as f:
-        experiments = json.load(f)
-
+    experiments = get_config('hyperparameters')
     all_metrics = []
     for i in range(len(experiments["name"])):
         logger.info(f"Experiment {i + 1} running...")
