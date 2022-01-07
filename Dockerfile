@@ -9,5 +9,5 @@ ADD static /static
 ADD templates /templates
 ADD app.py app.py
 
-EXPOSE 5000
-CMD ["python3",  "app.py"]
+ENTRYPOINT ["python"]
+CMD ["app.py"]
