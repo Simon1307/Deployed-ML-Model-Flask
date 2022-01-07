@@ -1,9 +1,4 @@
-FROM ubuntu:latest
-
-RUN apt-get update \
-  && apt-get upgrade -y \
-  && apt-get install -y python3-pip python3-dev \
-  && pip3 install --upgrade pip
+FROM python:3.8
 
 COPY requirements.txt /requirements.txt
 
