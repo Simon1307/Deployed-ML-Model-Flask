@@ -27,5 +27,3 @@ Run the docker image.
     $ sudo docker run -p 5000:5000 titanic-prediction
 
 Now the web application is available at: http://127.0.0.1:5000
-
-
